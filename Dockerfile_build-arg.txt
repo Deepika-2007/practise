@@ -1,0 +1,23 @@
+FROM centos
+ARG user=sss
+
+LABEL maintainer=Raghu
+LABEL vendor=Microsoft
+
+RUN yum install -y httpd unzip
+
+ENV HTML beginner-html-site-styled
+
+ADD  https://github.com/Aruna2005/$HTML/archive/gh-pages.zip /var/www/html/code.zip
+
+RUN cd /var/www/html/ && \
+    unzip code.zip && \
+    mv /var/www/html/$HTML-gh-pages/* /var/www/html && \
+    echo $HTML > /var/www/html/env.html && \
+    useradd $user && \
+    chown -R $user:$user /var/www/html && \
+    rm -rf code.zip
+
+USER root
+
+CMD apachectl -DFOREGROUND
