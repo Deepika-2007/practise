@@ -1,0 +1,24 @@
+FROM maven:3.6-alpine
+# www :- maven sample app ===> https://github.com/jenkins-docs ===> git clone url ==> rename using mv command to app-maven
+
+COPY app-maven /app
+
+WORKDIR /app
+
+RUN mvn package
+
+# docker build -t image:v1 -f Dockerfile_name <current-path of file >  ===> while downloading time copy building jar file ex ==> /app/target/my-app-1.0-SNAPSHOT.jar/app.jar /app.jar
+# docker images |grep image:v1
+# Replace first line with below line
+FROM maven:3.6-alpine as builder
+
+COPY --from=builder /app/target/my-app-1.0-SNAPSHOT.jar/app.jar /app.jar
+
+CMD java -jar /app.jar
+
+# docker build -t image:v2 -f Dockerfile_name <current-path of file >
+#docker run -d image:v2
+# docker ps -a
+# docker logs Container_id/container_name
+
+
